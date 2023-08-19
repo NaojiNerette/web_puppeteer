@@ -82,7 +82,7 @@ const headless = !process.argv.includes('-h');
 
 
             const elProductGridArray = await page.$$('.products-grid');
-            if (elProductGridArray) console.log(elProductGridArray.length);
+            if (elProductGridArray) console.log('elProductGridArray: '+elProductGridArray.length);
             
             let productNumber = 0;
             for (const productGrid of elProductGridArray) {
@@ -98,16 +98,26 @@ const headless = !process.argv.includes('-h');
 
                     while (isActualProduct){
                        
-                        const badgeAddButton = await product.$('.badge-add');
-                        if (badgeAddButton) await badgeAddButton.click();
+                        //await page.waitForTimeout(1000000);
+                        //const [badgeAddButton] = await product.$x("//button[contains(@class,'badge-add')]");
+                        //if (badgeAddButton) await badgeAddButton.click();
 
+                        let countUnit = 0;
+                        const addProductButton = await product.$('.add-product');
+                        if (addProductButton){
+                            console.log('addProductButton: '+addProductButton);
+                            addProductButton.click();
+                            countUnit++;
+                        }
+
+                        await page.waitForSelector('button.more');
                         const moreButton = await product.$('.more');
                         console.log(moreButton);
 
                         if(moreButton){
-                            await moreButton.click()
-                            await moreButton.click()
-                            await moreButton.click()
+                            for (let count = countUnit; count < 3; count++) {
+                                await moreButton.click();
+                            }
                             countProduct += 3;
                         }
                         
